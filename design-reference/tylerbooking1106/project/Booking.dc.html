@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#000;}
+  *{box-sizing:border-box;}
+  @keyframes tlrRise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  button{font-family:inherit;}
+</style>
+</helmet>
+<div style="min-height:100vh;background:linear-gradient(180deg,#0a0a0a 0%,#000 100%);color:#F2EFE9;font-family:'Space Grotesk',system-ui,sans-serif;padding:44px 32px 96px;">
+
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;max-width:1000px;margin:0 auto;">
+    <h1 style="font-family:'Anton',sans-serif;font-size:clamp(40px,6vw,56px);line-height:1;letter-spacing:0.01em;margin:0;color:#F2EFE9;">Booking</h1>
+    <img src="assets/tyler-logo-transparent.png" alt="Tyler" style="height:22px;width:auto;opacity:0.8;margin-top:12px;" />
+  </div>
+
+  <!-- STEP 1 — SERVICES -->
+  <sc-if value="{{ s1 }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:672px;margin:38px auto 0;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;">Étape 01</div>
+      <h2 style="font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.4vw,46px);line-height:0.98;letter-spacing:-0.01em;color:#F2EFE9;margin:11px 0 36px;">Choisissez votre prestation</h2>
+      <sc-for list="{{ services }}" as="grp" hint-placeholder-count="3">
+        <div style="margin-bottom:26px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;margin-bottom:12px;">{{ grp.label }}</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ grp.items }}" as="it" hint-placeholder-count="3">
+              <button style="{{ it.style }}" onClick="{{ it.onClick }}" onMouseEnter="{{ it.onEnter }}" onMouseLeave="{{ it.onLeave }}">
+                <span style="font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:16px;">{{ it.name }}</span>
+                <span style="{{ it.metaStyle }}">{{ it.meta }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;align-items:center;justify-content:flex-end;border-top:1px solid #262626;margin-top:32px;padding-top:24px;">
+        <button style="{{ suivant.style }}" onClick="{{ suivant.onClick }}" disabled="{{ suivant.disabled }}">Suivant</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- STEP 2 — BARBER -->
+  <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:672px;margin:38px auto 0;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;">Étape 02</div>
+      <h2 style="font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.4vw,46px);line-height:0.98;letter-spacing:-0.01em;color:#F2EFE9;margin:11px 0 36px;">Choisissez votre barbier</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <sc-for list="{{ barbersTwo }}" as="b" hint-placeholder-count="2">
+          <button style="{{ b.style }}" onClick="{{ b.onClick }}" onMouseEnter="{{ b.onEnter }}" onMouseLeave="{{ b.onLeave }}">
+            <span style="display:grid;place-items:center;width:52px;height:52px;border-radius:999px;background:#171717;border:1px solid #2a2a2a;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.18em;color:#6F6F79;flex:none;">PORTRAIT</span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;">{{ b.name }}</span>
+            <span style="{{ b.radioStyle }}"></span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="margin-top:14px;">
+        <button style="{{ barberNone.style }}" onClick="{{ barberNone.onClick }}" onMouseEnter="{{ barberNone.onEnter }}" onMouseLeave="{{ barberNone.onLeave }}">
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;">{{ barberNone.name }}</span>
+          <span style="{{ barberNone.radioStyle }}"></span>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #262626;margin-top:32px;padding-top:24px;">
+        <button style="{{ prevStyle }}" onClick="{{ back }}">Précédent</button>
+        <button style="{{ suivant.style }}" onClick="{{ suivant.onClick }}" disabled="{{ suivant.disabled }}">Suivant</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- STEP 3 — DATE & TIME -->
+  <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:1000px;margin:38px auto 0;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;">Étape 03</div>
+      <h2 style="font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.4vw,46px);line-height:0.98;letter-spacing:-0.01em;color:#F2EFE9;margin:11px 0 36px;">Choisissez une date et une heure</h2>
+      <div style="display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start;">
+
+        <div style="border:1px solid #262626;border-radius:8px;padding:24px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;margin-bottom:8px;">Votre réservation</div>
+          <sc-for list="{{ recapRows }}" as="r" hint-placeholder-count="6">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:11px 0;border-top:1px solid #1c1c1c;">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#6F6F79;flex:none;">{{ r.label }}</span>
+              <span style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#F2EFE9;text-align:right;">{{ r.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="border:1px solid #262626;border-radius:8px;padding:22px 24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <span style="display:grid;place-items:center;width:28px;height:28px;border-radius:6px;color:#6F6F79;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </span>
+            <div style="display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:13px;color:#F2EFE9;">
+              <span style="display:flex;align-items:center;gap:5px;">Jun<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6F6F79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+              <span style="display:flex;align-items:center;gap:5px;">2026<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#6F6F79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </div>
+            <span style="display:grid;place-items:center;width:28px;height:28px;border-radius:6px;color:#6F6F79;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Su</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Mo</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Tu</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">We</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Th</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Fr</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.08em;color:#6F6F79;text-align:center;">Sa</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
+            <sc-for list="{{ dayCells }}" as="d" hint-placeholder-count="35">
+              <button style="{{ d.style }}" onClick="{{ d.onClick }}" onMouseEnter="{{ d.onEnter }}" onMouseLeave="{{ d.onLeave }}" disabled="{{ d.disabled }}">{{ d.label }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ showSlots }}" hint-placeholder-val="{{ false }}">
+            <div style="border-top:1px solid #262626;margin-top:20px;padding-top:18px;">
+              <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;margin-bottom:14px;">{{ dateHeader }}</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                <sc-for list="{{ timeCells }}" as="t" hint-placeholder-count="16">
+                  <button style="{{ t.style }}" onClick="{{ t.onClick }}" onMouseEnter="{{ t.onEnter }}" onMouseLeave="{{ t.onLeave }}" disabled="{{ t.disabled }}">{{ t.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #262626;margin-top:32px;padding-top:24px;">
+        <button style="{{ prevStyle }}" onClick="{{ back }}">Précédent</button>
+        <button style="{{ suivant.style }}" onClick="{{ suivant.onClick }}" disabled="{{ suivant.disabled }}">Suivant</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- STEP 4 — CONFIRMATION -->
+  <sc-if value="{{ s4 }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:672px;margin:38px auto 0;">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#6F6F79;">Étape 04</div>
+      <h2 style="font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.4vw,46px);line-height:0.98;letter-spacing:-0.01em;color:#F2EFE9;margin:11px 0 36px;">Confirmez votre réservation</h2>
+      <div style="border-bottom:1px solid #262626;">
+        <sc-for list="{{ confirmRows }}" as="r" hint-placeholder-count="6">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid #262626;">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.24em;text-transform:uppercase;color:#6F6F79;flex:none;">{{ r.label }}</span>
+            <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;color:#F2EFE9;text-align:right;">{{ r.value }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:34px;">
+        <button style="{{ prevTextStyle }}" onClick="{{ back }}">Précédent</button>
+        <button style="{{ confirmStyle }}" onClick="{{ confirm }}">Confirmer la réservation</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- SUCCESS -->
+  <sc-if value="{{ success }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:560px;margin:84px auto 0;text-align:center;">
+      <div style="width:84px;height:84px;border-radius:999px;margin:0 auto 30px;display:grid;place-items:center;background:rgba(74,222,128,0.10);border:1px solid rgba(74,222,128,0.35);">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h2 style="font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(30px,4.4vw,46px);letter-spacing:-0.01em;line-height:0.98;margin:0 0 18px;color:#F2EFE9;">Réservation confirmée</h2>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;color:#a3a3a3;margin-bottom:12px;">{{ successSub }}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:13px;letter-spacing:0.06em;color:#6F6F79;">{{ successWhen }}</div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { step: 1, service: null, barber: null, day: null, time: null, confirmed: false, hover: null };
+
+  renderVals() {
+    const st = this.state;
+    const WHITE = "#F2EFE9", INK = "#0a0a0a", MONO = "#6F6F79";
+
+    const SERVICES = [
+      { group: "Cheveux", items: [
+        { name: "Coupe", dur: 30, price: 40 },
+        { name: "Coupe transformation", dur: 60, price: 55 },
+        { name: "Décoloration", dur: null, price: null },
+        { name: "Shampoing & soin spécifique", dur: 15, price: 10 },
+      ]},
+      { group: "Barbe", items: [
+        { name: "Sculpture de barbe + rasage", dur: 30, price: 35 },
+        { name: "Rasage traditionnel", dur: 30, price: 25 },
+        { name: "Sculpture de barbe", dur: 30, price: 25 },
+        { name: "Coloration de barbe", dur: 30, price: 20 },
+      ]},
+      { group: "Combiné", items: [
+        { name: "Coupe + taille de barbe", dur: 45, price: 55 },
+        { name: "Coupe + taille de barbe + rasage & serviette chaude", dur: 60, price: 65 },
+      ]},
+    ];
+
+    const DAY_ABBR = ["DIM.", "LUN.", "MAR.", "MER.", "JEU.", "VEN.", "SAM."];
+    const DAY_FULL = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+    const TIMES = ["10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30"];
+    const TIME_DISABLED = new Set(["11:00", "15:00"]);
+
+    // ---- handlers ----
+    const selectService = (n) => this.setState({ service: n });
+    const selectBarber = (b) => this.setState({ barber: b });
+    const selectDay = (n) => this.setState({ day: n, time: null });
+    const selectTime = (t) => this.setState({ time: t });
+    const hov = (k) => this.setState({ hover: k });
+    const unhov = () => this.setState({ hover: null });
+    const back = () => this.setState((s) => ({ step: Math.max(s.step - 1, 1) }));
+
+    // ---- selected service lookup ----
+    let selSvc = null;
+    SERVICES.forEach((g) => g.items.forEach((it) => { if (it.name === st.service) selSvc = it; }));
+
+    // ---- recap values ----
+    const presta = selSvc ? selSvc.name : "—";
+    const duree = selSvc ? (selSvc.dur != null ? selSvc.dur + " min" : "—") : "—";
+    const coiffeur = st.barber || "—";
+    const prix = selSvc ? (selSvc.price != null ? selSvc.price + ",00\u00A0€" : "Sur demande") : "—";
+    const w = st.day != null ? st.day % 7 : null;
+    const dateRecap = st.day != null ? (st.day + " juin 2026") : "—";
+    const heureRecap = st.time ? st.time.replace(":", "h") : "—";
+    const dateHeader = st.day != null ? (DAY_ABBR[w] + " " + st.day + " JUIN 2026") : "";
+    const dateLong = st.day != null ? (DAY_FULL[w] + " " + st.day + " juin 2026") : "—";
+
+    // ---- style builders ----
+    const cardStyle = (sel, hovd) => ({
+      display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px",
+      width: "100%", textAlign: "left", cursor: "pointer", appearance: "none",
+      padding: "18px 22px", borderRadius: "8px",
+      border: "1px solid " + (sel ? WHITE : hovd ? "#525252" : "#262626"),
+      background: sel ? WHITE : "transparent", color: sel ? INK : WHITE,
+      transition: "border-color .18s ease, background .18s ease, color .18s ease",
+    });
+    const metaStyleFor = (sel) => ({
+      fontFamily: "'Space Mono',monospace", fontSize: "10px", letterSpacing: "0.26em",
+      textTransform: "uppercase", whiteSpace: "nowrap", flex: "none",
+      color: sel ? "rgba(10,10,10,0.55)" : MONO,
+    });
+    const barberStyle = (sel, hovd, plain) => ({
+      display: "flex", alignItems: "center", gap: "16px", width: "100%", textAlign: "left",
+      cursor: "pointer", appearance: "none", padding: plain ? "18px 20px" : "16px 18px",
+      borderRadius: "8px",
+      border: "1px solid " + (sel ? WHITE : hovd ? "#525252" : "#262626"),
+      background: sel ? WHITE : "transparent", color: sel ? INK : WHITE,
+      transition: "border-color .18s ease, background .18s ease, color .18s ease",
+    });
+    const radioStyle = (sel) => ({
+      width: "18px", height: "18px", borderRadius: "999px", flex: "none", marginLeft: "auto",
+      border: "1px solid " + (sel ? INK : "#525252"),
+      background: sel ? INK : "transparent",
+      boxShadow: sel ? "inset 0 0 0 3px " + WHITE : "none",
+    });
+    const dayStyle = (c, hovd) => {
+      const base = {
+        width: "40px", height: "40px", margin: "0 auto", display: "grid", placeItems: "center",
+        fontFamily: "'Space Mono',monospace", fontSize: "13px", borderRadius: "6px",
+        border: "1px solid transparent", background: "transparent", appearance: "none",
+        userSelect: "none", transition: "background .15s ease, color .15s ease",
+      };
+      if (c.isOut || c.disabled) return { ...base, color: "#525252", cursor: "default" };
+      if (c.selected) return { ...base, background: WHITE, color: INK, cursor: "pointer" };
+      if (c.isToday) return { ...base, background: "rgba(242,239,233,0.09)", color: WHITE, cursor: "pointer" };
+      return { ...base, color: WHITE, cursor: "pointer", background: hovd ? "rgba(242,239,233,0.05)" : "transparent" };
+    };
+    const timeStyle = (disabled, sel, hovd) => {
+      const base = {
+        fontFamily: "'Space Mono',monospace", fontSize: "13px", letterSpacing: "0.04em",
+        padding: "12px 0", textAlign: "center", borderRadius: "8px", appearance: "none",
+        border: "1px solid #262626", background: "transparent", color: WHITE,
+        transition: "border-color .15s ease, background .15s ease, color .15s ease",
+      };
+      if (disabled) return { ...base, color: "#404040", borderColor: "#171717", cursor: "not-allowed", textDecoration: "line-through" };
+      if (sel) return { ...base, background: WHITE, color: INK, borderColor: WHITE, cursor: "pointer" };
+      return { ...base, borderColor: hovd ? "#525252" : "#262626", cursor: "pointer" };
+    };
+
+    // ---- services ----
+    const services = SERVICES.map((g) => ({
+      label: g.group,
+      items: g.items.map((it) => {
+        const sel = st.service === it.name;
+        const hovd = st.hover === "svc:" + it.name;
+        const meta = it.dur != null ? (it.dur + " MIN — " + it.price + " €") : "SUR DEMANDE";
+        return {
+          name: it.name, meta,
+          style: cardStyle(sel, hovd), metaStyle: metaStyleFor(sel),
+          onClick: () => selectService(it.name),
+          onEnter: () => hov("svc:" + it.name), onLeave: unhov,
+        };
+      }),
+    }));
+
+    // ---- barbers ----
+    const mkBarber = (name, plain) => {
+      const sel = st.barber === name;
+      const hovd = st.hover === "bar:" + name;
+      return {
+        name, style: barberStyle(sel, hovd, plain), radioStyle: radioStyle(sel),
+        onClick: () => selectBarber(name),
+        onEnter: () => hov("bar:" + name), onLeave: unhov,
+      };
+    };
+    const barbersTwo = [mkBarber("Tyler", false), mkBarber("Giorno", false)];
+    const barberNone = mkBarber("Sans préférence", true);
+
+    // ---- calendar (June 2026; June 1 = Monday) ----
+    const cells = [];
+    cells.push({ label: 31, isOut: true, disabled: true });
+    for (let n = 1; n <= 30; n++) {
+      const wd = n % 7;
+      const disabled = wd === 1 || n < 10; // Mondays + past (today = June 10)
+      cells.push({ label: n, isOut: false, disabled, isToday: n === 10, selected: st.day === n });
+    }
+    [1, 2, 3, 4].forEach((j) => cells.push({ label: j, isOut: true, disabled: true }));
+    const dayCells = cells.map((c, i) => {
+      const active = !c.isOut && !c.disabled;
+      const hovd = active && st.hover === "day:" + c.label;
+      return {
+        key: "d" + i, label: c.label, disabled: !!(c.isOut || c.disabled),
+        style: dayStyle(c, hovd),
+        onClick: active ? () => selectDay(c.label) : undefined,
+        onEnter: active ? () => hov("day:" + c.label) : undefined,
+        onLeave: active ? unhov : undefined,
+      };
+    });
+
+    // ---- time slots ----
+    const timeCells = TIMES.map((t) => {
+      const disabled = TIME_DISABLED.has(t);
+      const sel = st.time === t;
+      const hovd = st.hover === "time:" + t;
+      return {
+        label: t, disabled, style: timeStyle(disabled, sel, hovd),
+        onClick: disabled ? undefined : () => selectTime(t),
+        onEnter: disabled ? undefined : () => hov("time:" + t),
+        onLeave: disabled ? undefined : unhov,
+      };
+    });
+
+    // ---- recap / confirm rows ----
+    const recapRows = [
+      { label: "Prestation", value: presta }, { label: "Durée", value: duree },
+      { label: "Coiffeur", value: coiffeur }, { label: "Prix", value: prix },
+      { label: "Date", value: dateRecap }, { label: "Heure", value: heureRecap },
+    ];
+    const confirmRows = [
+      { label: "Prestation", value: presta }, { label: "Durée", value: duree },
+      { label: "Coiffeur", value: coiffeur }, { label: "Date", value: dateLong },
+      { label: "Heure", value: heureRecap }, { label: "Prix", value: prix },
+    ];
+
+    // ---- nav buttons ----
+    const canNext = (st.step === 1 && !!st.service) || (st.step === 2 && !!st.barber) || (st.step === 3 && st.day != null && !!st.time);
+    const btnBase = { fontFamily: "'Space Mono',monospace", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", padding: "13px 26px", borderRadius: "8px", border: "none", appearance: "none" };
+    const suivant = {
+      style: { ...btnBase, background: canNext ? WHITE : "#171717", color: canNext ? INK : "#525252", cursor: canNext ? "pointer" : "not-allowed", transition: "background .18s ease, color .18s ease" },
+      onClick: canNext ? () => this.setState((s) => ({ step: Math.min(s.step + 1, 4) })) : undefined,
+      disabled: !canNext,
+    };
+    const prevStyle = { ...btnBase, background: "transparent", color: WHITE, border: "1px solid #262626", cursor: "pointer" };
+    const prevTextStyle = { fontFamily: "'Space Mono',monospace", fontSize: "11px", letterSpacing: "0.22em", textTransform: "uppercase", background: "transparent", border: "none", color: MONO, cursor: "pointer", padding: "6px 0" };
+    const confirmStyle = { ...btnBase, fontSize: "12px", letterSpacing: "0.15em", padding: "15px 30px", background: WHITE, color: INK, cursor: "pointer" };
+    const confirm = () => this.setState({ confirmed: true });
+
+    return {
+      s1: !st.confirmed && st.step === 1,
+      s2: !st.confirmed && st.step === 2,
+      s3: !st.confirmed && st.step === 3,
+      s4: !st.confirmed && st.step === 4,
+      success: st.confirmed,
+      services, barbersTwo, barberNone,
+      dayCells, timeCells, showSlots: st.day != null, dateHeader,
+      recapRows, confirmRows,
+      suivant, prevStyle, prevTextStyle, confirmStyle, back, confirm,
+      successSub: presta + " avec " + coiffeur,
+      successWhen: dateLong + " à " + heureRecap,
+    };
+  }
+}
+</script>
+</body>
+</html>
