@@ -1,4 +1,4 @@
-import BookingWizard from '@/components/Booking/bookingWizard';
+import BookingWizard from '@/components/Booking/BookingWizard';
 import { getBarbers } from '@/lib/barbers';
 import { getServices } from '@/lib/services';
 
@@ -12,7 +12,7 @@ export default async function BookingPage() {
 			<h1 className="text-5xl font-bold tracking-tight">Booking</h1>
 		</div>
 
-		<BookingWizard services={services} hairdressers={hairsdressers}/>
+		<BookingWizard services={services} barbers={hairsdressers}/>
 	</div>
 	)
 }

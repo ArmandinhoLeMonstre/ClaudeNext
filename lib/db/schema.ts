@@ -41,3 +41,4 @@ export const availabilities = pgTable('availabilities', {
 });
 
 export type Service = typeof services.$inferSelect;
+export type Barbers = typeof hairdressers.$inferSelect;
