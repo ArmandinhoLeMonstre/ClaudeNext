@@ -8,52 +8,47 @@ export default function ServiceStep({ state, dispatch, services }: ServiceProps)
 
   return (
     <div>
-      <p className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">ÉTAPE 01</p>
-      <h2 className="mt-2 text-4xl font-bold tracking-tight">CHOISISSEZ VOTRE PRESTATION</h2>
+      <p className="font-mono text-[10px] uppercase tracking-eyebrow text-text-muted">Étape 01</p>
+      <h2 className="mt-[11px] mb-9 font-display text-[clamp(1.875rem,4.4vw,2.875rem)] uppercase leading-[0.98] tracking-[-0.01em] text-foreground">
+        Choisissez votre prestation
+      </h2>
 
-      <div className="mt-7 space-y-8">
+      <div className="space-y-6">
         {services.map((group) => (
           <div key={group.group}>
-            {/* group header + divider line */}
-            <div className="mb-2 flex items-center gap-3">
-              <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">{group.group}</span>
-              <span className="h-px flex-1 bg-neutral-800" />
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-eyebrow text-text-muted">{group.group}</p>
+
+            <div className="flex flex-col gap-2.5">
+              {group.items.map((s) => {
+                const active = state.service === s.id;
+                const meta =
+                  s.durationMinutes != null && s.priceCents != null
+                    ? `${s.durationMinutes} MIN — ${s.priceCents / 100} €`
+                    : "SUR DEMANDE";
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => dispatch({ type: "SELECT_SERVICE", service: s.id })}
+                    className={`flex w-full items-center justify-between gap-4 rounded-card border px-[22px] py-[18px] text-left transition-colors ${
+                      active
+                        ? "border-foreground bg-foreground text-inverse"
+                        : "border-border-default text-foreground hover:border-border-hover"
+                    }`}
+                  >
+                    <span className="text-base font-medium">{s.name}</span>
+
+                    <span
+                      className={`shrink-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-meta ${
+                        active ? "text-inverse/55" : "text-text-muted"
+                      }`}
+                    >
+                      {meta}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-
-            {group.items.map((s) => {
-              const active = state.service === s.id;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => dispatch({ type: "SELECT_SERVICE", service: s.id })}
-                  className={`flex w-full items-center gap-4 rounded-lg px-2 py-3 text-left transition-colors ${
-                    active ? "bg-neutral-900" : "hover:bg-neutral-950"
-                  }`}
-                >
-                  {/* radio */}
-                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${active ? "border-white" : "border-neutral-600"}`}>
-                    {active && <span className="h-2.5 w-2.5 rounded-full bg-white" />}
-                  </span>
-
-                  {/* name takes the slack, pushing the rest right */}
-                  <span className="flex-1 text-[15px]">{s.name}</span>
-
-                  {/* duration column */}
-                  <span className="w-16 text-right font-mono text-xs text-neutral-500">
-                    {s.durationMinutes ? `${s.durationMinutes} min` : "—"}
-                  </span>
-
-                  {/* price column */}
-                  <span className="w-24 text-right">
-                    {s.priceCents == null ? (
-                      <span className="font-mono text-[10px] tracking-wider text-neutral-500">SUR DEMANDE</span>
-                    ) : (
-                      <span className="text-lg font-bold">€{s.priceCents / 100}</span>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
           </div>
         ))}
       </div>

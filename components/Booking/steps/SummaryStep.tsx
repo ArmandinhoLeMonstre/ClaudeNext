@@ -24,13 +24,13 @@ export default function SummaryStep({ state, dispatch, services, hairdressers, o
   const isSubmitting = state.status === "submitting";
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">ÉTAPE 04</p>
-        <h2 className="mt-2 text-4xl font-bold tracking-tight">CONFIRMEZ VOTRE RÉSERVATION</h2>
-      </div>
+    <div>
+      <p className="font-mono text-[10px] uppercase tracking-eyebrow text-text-muted">Étape 04</p>
+      <h2 className="mt-[11px] mb-9 font-display text-[clamp(1.875rem,4.4vw,2.875rem)] uppercase leading-[0.98] tracking-[-0.01em] text-foreground">
+        Confirmez votre réservation
+      </h2>
 
-      <dl className="divide-y divide-neutral-800 border-y border-neutral-800">
+      <dl className="border-b border-border-default">
         <Row label="Prestation" value={service?.name ?? "—"} />
         <Row label="Durée" value={service?.durationMinutes ? `${service.durationMinutes} min` : "—"} />
         <Row label="Coiffeur" value={barber?.name ?? "—"} />
@@ -39,15 +39,15 @@ export default function SummaryStep({ state, dispatch, services, hairdressers, o
         <Row label="Prix" value={service?.priceCents != null ? euros.format(service.priceCents / 100) : "—"} />
       </dl>
 
-      {state.status === "error" && <p className="text-sm text-red-400">{state.error}</p>}
+      {state.status === "error" && <p className="mt-4 text-sm text-accent-danger">{state.error}</p>}
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="mt-[34px] flex items-center justify-between gap-4">
         <button type="button" onClick={() => dispatch({ type: "PREV" })} disabled={isSubmitting}
-          className="font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-100 disabled:opacity-50">
+          className="py-1.5 font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-foreground disabled:opacity-50">
           Précédent
         </button>
         <button type="button" onClick={onConfirm} disabled={isSubmitting}
-          className="inline-flex items-center gap-2 bg-white px-6 py-3 font-mono text-xs uppercase tracking-widest text-black hover:bg-neutral-200 disabled:opacity-50">
+          className="inline-flex items-center gap-2 rounded-card bg-foreground px-[30px] py-[15px] font-mono text-xs uppercase tracking-[0.15em] text-inverse transition-colors disabled:opacity-50">
           {isSubmitting && <Loader2 className="size-4 animate-spin" />}
           {isSubmitting ? "Réservation…" : "Confirmer la réservation"}
         </button>
@@ -58,9 +58,9 @@ export default function SummaryStep({ state, dispatch, services, hairdressers, o
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-3">
-      <dt className="font-mono text-xs uppercase tracking-widest text-neutral-500">{label}</dt>
-      <dd className="text-sm text-neutral-100">{value}</dd>
+    <div className="flex items-baseline justify-between gap-4 border-t border-border-default py-4">
+      <dt className="shrink-0 font-mono text-[10px] uppercase tracking-[0.24em] text-text-muted">{label}</dt>
+      <dd className="text-right text-[15px] text-foreground">{value}</dd>
     </div>
   );
 }

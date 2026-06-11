@@ -32,19 +32,19 @@ export default function TimeSlots({ state, dispatch }: BookingProps) {
 
   return (
     <div>
-      <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-500">
+      <p className="mb-[14px] font-mono text-[10px] uppercase tracking-eyebrow text-text-muted">
         {state.date ? formatDateHeader(state.date) : "—"}
       </p>
 
       {loading ? (
-        <div className="mt-4 flex items-center gap-2 text-neutral-400">
+        <div className="flex items-center gap-2 text-text-muted">
           <Loader2 className="size-4 animate-spin" />
           <span className="text-sm">Chargement…</span>
         </div>
       ) : slots.length === 0 ? (
-        <p className="mt-4 text-sm text-neutral-400">Aucun créneau disponible ce jour.</p>
+        <p className="text-sm text-text-muted">Aucun créneau disponible ce jour.</p>
       ) : (
-        <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-4 gap-2">
           {slots.map((t) => {
             const active = state.time === t;
             return (
@@ -52,10 +52,10 @@ export default function TimeSlots({ state, dispatch }: BookingProps) {
                 key={t}
                 type="button"
                 onClick={() => dispatch({ type: "SELECT_TIME", time: t })}
-                className={`rounded-md border px-3 py-2.5 text-center font-mono text-sm transition-colors ${
+                className={`rounded-card border py-3 text-center font-mono text-[13px] tracking-[0.04em] transition-colors ${
                   active
-                    ? "border-white bg-white text-black"
-                    : "border-neutral-800 bg-neutral-950 text-neutral-200 hover:border-neutral-600"
+                    ? "border-foreground bg-foreground text-inverse"
+                    : "border-border-default text-foreground hover:border-border-hover"
                 }`}
               >
                 {t}

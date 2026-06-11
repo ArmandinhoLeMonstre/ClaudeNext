@@ -28,7 +28,7 @@ export default function BookingWizard({ services, barbers }: Props) {
     switch (state.step) {
       case 0: return <ServiceStep state={state} dispatch={dispatch} services={services} />;
       case 1: return <BarberStep state={state} dispatch={dispatch} barbers={barbers} />;
-      case 2: return <DateTimeStep state={state} dispatch={dispatch} />;
+      case 2: return <DateTimeStep state={state} dispatch={dispatch} services={services} hairdressers={barbers} />;
       case 3: return (
         <SummaryStep state={state} dispatch={dispatch}
           services={services} hairdressers={barbers} onConfirm={handleConfirm} />

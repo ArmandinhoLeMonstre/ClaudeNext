@@ -3,59 +3,64 @@ import { barbersGrouped, BookingProps } from "../types";
 
 type HairdressersProps = BookingProps & {barbers: barbersGrouped[]}
 
+const cardClass = (active: boolean) =>
+  `flex w-full items-center gap-4 rounded-card border text-left transition-colors ${
+    active
+      ? "border-foreground bg-foreground text-inverse"
+      : "border-border-default text-foreground hover:border-border-hover"
+  }`;
+
+const radio = (active: boolean) => (
+  <span
+    className={`ml-auto h-[18px] w-[18px] shrink-0 rounded-full border ${
+      active ? "border-inverse bg-inverse shadow-[inset_0_0_0_3px_#f2efe9]" : "border-border-hover"
+    }`}
+  />
+);
+
 export default function BarberStep({ state, dispatch, barbers }: HairdressersProps) {
-  const selectedBarber = barbers.find((b) => b.id === state.barber);
+  // The design surfaces a full-width "Sans préférence" option below the grid.
+  // We only render it if such a barber actually exists in the data, so the POST
+  // always receives a real hairdresser id.
+  const noPref = barbers.find((b) => /sans pr[ée]f/i.test(b.name));
+  const gridBarbers = barbers.filter((b) => b !== noPref);
 
   return (
     <div>
-      <p className="font-mono text-[10px] tracking-[0.3em] text-neutral-500">ÉTAPE 02</p>
-      <h2 className="mt-2 text-4xl font-bold tracking-tight">CHOISISSEZ VOTRE BARBIER</h2>
+      <p className="font-mono text-[10px] uppercase tracking-eyebrow text-text-muted">Étape 02</p>
+      <h2 className="mt-[11px] mb-9 font-display text-[clamp(1.875rem,4.4vw,2.875rem)] uppercase leading-[0.98] tracking-[-0.01em] text-foreground">
+        Choisissez votre barbier
+      </h2>
 
-      <div className="mt-7 grid gap-3 sm:grid-cols-2">
-        {barbers.map((b) => {
-          const isSelected = state.barber === b.id;
+      <div className="grid grid-cols-2 gap-3.5">
+        {gridBarbers.map((b) => {
+          const active = state.barber === b.id;
           return (
             <button
               key={b.id}
+              type="button"
               onClick={() => dispatch({ type: "SELECT_BARBER", barber: b.id })}
-              className={`flex items-center gap-4 rounded-2xl border p-4 text-left transition-colors ${
-                isSelected
-                  ? "border-white bg-neutral-950"
-                  : "border-neutral-800 bg-neutral-950/40 hover:border-neutral-700 hover:bg-neutral-900/40"
-              }`}
+              className={`${cardClass(active)} px-[18px] py-4`}
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-black font-mono text-[8px] tracking-widest text-neutral-600">
+              <span className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full border border-[#2a2a2a] bg-elevated font-mono text-[8px] tracking-[0.18em] text-text-muted">
                 PORTRAIT
               </span>
-
-              <span className="flex-1">
-                <span className="block text-2xl font-bold leading-none">{b.name}</span>
-              </span>
-
-              <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                  isSelected ? "border-white" : "border-neutral-600"
-                }`}
-              >
-                {isSelected && <span className="h-2.5 w-2.5 rounded-full bg-white" />}
-              </span>
+              <span className="text-[17px] font-semibold">{b.name}</span>
+              {radio(active)}
             </button>
           );
         })}
       </div>
 
-      {selectedBarber && (
-        <div className="mt-6 flex items-center gap-3 rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white">
-            <span className="text-xs font-bold text-black">✓</span>
-          </span>
-          <span>
-            <span className="block font-mono text-[10px] tracking-[0.3em] text-neutral-500">
-              BARBIER SÉLECTIONNÉ
-            </span>
-            <span className="block text-lg font-bold leading-tight">{selectedBarber.name}</span>
-          </span>
-        </div>
+      {noPref && (
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "SELECT_BARBER", barber: noPref.id })}
+          className={`${cardClass(state.barber === noPref.id)} mt-3.5 px-5 py-[18px]`}
+        >
+          <span className="text-[17px] font-semibold">{noPref.name}</span>
+          {radio(state.barber === noPref.id)}
+        </button>
       )}
     </div>
   );
