@@ -7,6 +7,7 @@ import DateTimeStep from "./steps/DateStep";
 import SummaryStep from "./steps/SummaryStep";
 import BookingConfirmation from "./BookingConfirmation";
 import WizardNav from "./WizardNav";
+import StepIndicator from "./StepIndicator";
 import { barbersGrouped, ServiceGrouped } from "./types";
 import { bookingReducer, canAdvance, initialState } from "./reducer";
 
@@ -61,6 +62,7 @@ export default function BookingWizard({ services, barbers }: Props) {
 
   return (
     <div className="w-full max-w-2xl">
+      <StepIndicator state={state} dispatch={dispatch} />
       {renderStep()}
       {state.step < 3 && (
         <WizardNav

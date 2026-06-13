@@ -21,7 +21,8 @@ export type Action =
 	| { type: "SUBMIT_SUCCESS"; booking: Booking }
 	| { type: "SUBMIT_ERROR"; error: string }
 	| { type: 'NEXT'}
-	| { type: 'PREV'};
+	| { type: 'PREV'}
+	| { type: "GOTO"; step: number };
 
 export type ServiceGrouped = {
   group: string;
