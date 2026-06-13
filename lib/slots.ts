@@ -2,8 +2,11 @@ import { db } from "@/lib/db";
 import { services, availabilities, bookings } from "@/lib/db/schema";
 import { fromISODate, toISODate } from "@/lib/dateFormat";
 import { and, eq, ne, gte, lt } from "drizzle-orm";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
 
-const SLOT_INTERVAL_MINUTES = 30; // how far apart candidate start times are
+const SALON_TZ = "Europe/Brussels";
+
+const SLOT_INTERVAL_MINUTES = 15; // how far apart candidate start times are
 
 type SlotInput = { hairdresserId: string; serviceId: string; date: string };
 
@@ -25,8 +28,8 @@ export async function getAvailableSlots({ hairdresserId, serviceId, date }: Slot
   // si oui, jour de taff donc -> dispo, sinon aucun creneau disponible
 
   // 3. existing bookings that day → busy ranges
-  const dayStart = new Date(`${date}T00:00:00`);
-  const dayEnd = new Date(`${date}T23:59:59`); // pour selectionner les 24 h de la journee du slot
+  const dayStart = fromZonedTime(`${date}T00:00:00`, SALON_TZ);
+  const dayEnd = fromZonedTime(`${date}T23:59:59`, SALON_TZ); // pour selectionner les 24 h de la journee du slot
   const booked = await db
     .select({ startsAt: bookings.startsAt, endsAt: bookings.endsAt })
     .from(bookings) // on reg dans la table des rdv
@@ -39,14 +42,14 @@ export async function getAvailableSlots({ hairdresserId, serviceId, date }: Slot
       ),
     );
   const busy = booked.map((b) => ({
-    start: b.startsAt.getHours() * 60 + b.startsAt.getMinutes(),
-    end: b.endsAt.getHours() * 60 + b.endsAt.getMinutes(),
+    start: zonedMinutes(b.startsAt),
+    end: zonedMinutes(b.endsAt),
   })); // convertisseur en minute qui du coup fais de plages horaires de minutes pour pas avoir a comparer les dates.
   // cad -> booked possede les slots, on la map donc on prend 1 par 1, on covertis par exemple 10:00 en 10x 60 = 600 minutes.
   // et 10:30 c'est 10 x 60 + le get minutes de 30 donc 630 min. on a un slot de 600 a 630 => ({600, 630})
 
   // hide past slots if the chosen day is today
-  const now = new Date();
+  const now = toZonedTime(new Date(), SALON_TZ);
   const isToday = toISODate(now) === date;
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
   // patch pour si il veut prendre slot le jour meme, apres on check l'heur actuelle ou il veut book et on propose pas les heures avant
@@ -78,7 +81,13 @@ function toMinutes(t: string) {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;
 }
+
 function toHHMM(min: number) {
   const h = Math.floor(min / 60), m = min % 60;
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function zonedMinutes(date: Date): number {
+  const z = toZonedTime(date, SALON_TZ);   // 08:30Z  →  a Date that reads as 10:30 Brussels
+  return z.getHours() * 60 + z.getMinutes(); // 10 * 60 + 30  =  630
 }

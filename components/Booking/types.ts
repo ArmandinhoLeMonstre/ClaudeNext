@@ -9,7 +9,7 @@ export type BookingState = {
 	time: string | null;
 	status: "idle" | "submitting" | "success" | "error"; // ← new
   	error: string | null;                                  // ← new
-  	confirmedBooking: Booking | null;  
+  	confirmedBooking: Booking | null;
 }
 
 export type Action = 

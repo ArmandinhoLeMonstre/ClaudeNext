@@ -16,7 +16,29 @@ export default function BookingWizard({ services, barbers }: Props) {
   const [state, dispatch] = useReducer(bookingReducer, initialState);
 
   async function handleConfirm() {
-    /* dispatch SUBMIT_START → fetch POST → SUBMIT_SUCCESS / SUBMIT_ERROR */
+    	dispatch({ type: "SUBMIT_START" });
+		try {
+			const res = await fetch("/api/bookings", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					hairdresserId: state.barber,
+					serviceId: state.service,
+					date: state.date,
+					time: state.time,
+				}),
+			});
+
+			if (res.ok) {
+				dispatch({ type: "SUBMIT_SUCCESS", booking: await res.json() });
+			} else if (res.status === 409) {
+				dispatch({ type: "SUBMIT_ERROR", error: "Ce créneau vient d'être réservé. Choisissez-en un autre." });
+			} else {
+				dispatch({ type: "SUBMIT_ERROR", error: "Une erreur est survenue. Réessayez." });
+			}
+		} catch {
+			dispatch({ type: "SUBMIT_ERROR", error: "Connexion impossible. Vérifiez votre réseau." });
+		}
   }
 
   // success replaces the whole wizard
