@@ -7,8 +7,14 @@ export const initialState: BookingState = {
 
 export function bookingReducer(state: BookingState, action: Action): BookingState {
   switch (action.type) {
-    case "SELECT_SERVICE": return { ...state, service: action.service };
-    case "SELECT_BARBER":  return { ...state, barber: action.barber };
+    case "SELECT_SERVICE":
+      // service duration drives slot length → invalidate any chosen date/time on change
+      if (action.service === state.service) return state;
+      return { ...state, service: action.service, date: null, time: null };
+    case "SELECT_BARBER":
+      // a different barber has a different schedule → invalidate chosen date/time on change
+      if (action.barber === state.barber) return state;
+      return { ...state, barber: action.barber, date: null, time: null };
     case "SELECT_DATE":    return { ...state, date: action.date, time: null }; // clear time
     case "SELECT_TIME":    return { ...state, time: action.time };
     case "NEXT":           return { ...state, step: state.step + 1 };
